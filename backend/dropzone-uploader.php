@@ -1,0 +1,35 @@
+<?php
+	if(isset($_FILES['image'])) {
+		// exit if file extension is not allowed
+		$filename = strtolower($_FILES['image']['name']);
+		$filemeta = pathinfo(strtolower($filename));
+
+
+		$allowed_file_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+		if(!in_array($filemeta['extension'], $allowed_file_extensions)) exit();
+
+		$upload_target[] = $_SERVER['DOCUMENT_ROOT'];
+		$upload_target[] = 'uploads';
+		$upload_target[] = $_FILES['image']['name'];
+
+		$upload_file = implode(DIRECTORY_SEPARATOR, $upload_target);
+
+		while(file_exists($upload_file)) {
+			$upload_target = explode(DIRECTORY_SEPARATOR, $upload_file);
+			$filename = end($upload_target);
+			array_pop($upload_target);
+
+			$filemeta = pathinfo($filename);
+			$filename = $filemeta['filename'].rand(0,999).'.'.$filemeta['extension'];
+
+			$upload_target[] = $filename;
+
+			$upload_file = implode(DIRECTORY_SEPARATOR, $upload_target);
+		}
+
+		if(move_uploaded_file($_FILES['image']['tmp_name'], $upload_file)) {
+			echo end(explode(DIRECTORY_SEPARATOR, $upload_file));
+		}
+	}
+?>
