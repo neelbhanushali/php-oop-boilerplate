@@ -13,10 +13,10 @@
 		$upload_target[] = 'uploads';
 		$upload_target[] = $_FILES['image']['name'];
 
-		$upload_file = implode(DIRECTORY_SEPARATOR, $upload_target);
+		$upload_file = implode('/', $upload_target);
 
 		while(file_exists($upload_file)) {
-			$upload_target = explode(DIRECTORY_SEPARATOR, $upload_file);
+			$upload_target = explode('/', $upload_file);
 			$filename = end($upload_target);
 			array_pop($upload_target);
 
@@ -25,11 +25,12 @@
 
 			$upload_target[] = $filename;
 
-			$upload_file = implode(DIRECTORY_SEPARATOR, $upload_target);
+			$upload_file = implode('/', $upload_target);
 		}
 
 		if(move_uploaded_file($_FILES['image']['tmp_name'], $upload_file)) {
-			echo end(explode(DIRECTORY_SEPARATOR, $upload_file));
+			$tmp = explode('/', $upload_file);
+			echo '/uploads/'.end($tmp);
 		}
 	}
 ?>
