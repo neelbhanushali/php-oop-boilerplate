@@ -19,7 +19,7 @@
 	/**
 	 * If file named down exists in root, show maintenance page
 	 */
-	if(file_exists('down')) {
+	if(file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.'down')) {
 		require_once 'backend/pages/maintenance.php';
 		die();
 	}
@@ -59,7 +59,15 @@
 	$g = json_decode(json_encode($_GET));
 	$s = json_decode(json_encode($_SESSION));
 	$c = json_decode(json_encode($_COOKIE));
-	
-	require_once 'backend/classes/db.php';
-	require_once 'backend/classes/user.php';
+
+	$path[] = $_SERVER['DOCUMENT_ROOT'];
+	$path[] = 'backend';
+	$path[] = 'classes';
+	$path = implode(DIRECTORY_SEPARATOR, $path);
+	$classes = scandir($path);
+
+	for($i = 2; $i < count($classes); $i++) {
+			require_once "backend/classes/{$classes[$i]}";
+	}
+
 ?>
