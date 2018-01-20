@@ -1,8 +1,10 @@
 <?php
+
+
 require_once 'db.php';
 
 class table {
-	protected $table;
+	protected $table = 'time';
 
 	public function id($id) {
 		$db = new db();
@@ -104,9 +106,28 @@ class table {
 			$this->success = true;
 	}
 
+
+	public function softdelete($column, $param, $value) {
+		$db = new db();
+
+		$sql = "UPDATE `{$this->table}` 
+						SET deleted_at = NOW()
+						WHERE {$column} {$param} :value";
+
+		$query = $db->pdo->prepare($sql);
+
+		$query->execute([
+			':value' => $value
+		]);
+
+		if($query->rowCount())
+			$this->success = true;
+	}
+
 }
 
-// $table = new table();
+$table = new table();
+$table->softdelete('id', '=', '2');
 
 // $user = new user();
 // $user->id(0);
