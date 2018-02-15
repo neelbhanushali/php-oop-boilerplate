@@ -1,22 +1,17 @@
 <?php
 class db {
 	public function __construct() {
-		$servername = 	'localhost';
-		$username 	= 	'root';
-		$password 	= 	'root';
-		$dbname 		= 	'test';
-
+		$d = json_decode(file_get_contents('../details.json'));
+		
 		try {
-	    $this->pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+	    $this->pdo = new PDO("mysql:host=$d->DB_HOST;dbname=$d->DB_NAME", $d->DB_USER, $d->DB_PASS);
 	    // set the PDO error mode to exception
 	    $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	    // echo "Connected successfully";
     }
 		catch(PDOException $e) {
-	    die(json_encode([
-	    	'success' => false,
-	    	'message' => 'db conx error'
-	    ]));
+		$this->success = false;
+		$this->message = 'db conx error';
     }
 	}
 
@@ -24,5 +19,6 @@ class db {
 		$this->pdo = null;
 	}
 }
-
+// $db = new db();
+// print_r($db);
 ?>
