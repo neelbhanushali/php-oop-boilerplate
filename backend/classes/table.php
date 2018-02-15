@@ -7,16 +7,45 @@ class table {
 	protected $table;
 
 	public function where($column, $param, $value) {
+		
 		$this->where[] = [
 			'column' => $column,
 			'param' => $param,
 			'value' => $value,
+		];
+		
+		// // items that are not trashed
+		// $this->where[] = [
+		// 	'column' => 'deleted_at',
+		// 	'param' => 'IS',
+		// 	'value' => 'NULL',
+		// ];
+
+		return $this;
+	}
+
+	public function trashed() {
+
+		// items that are trashed
+		$this->where[] = [
+			'column' => 'deleted_at',
+			'param' => 'IS NOT',
+			'value' => 'NULL',
 		];
 
 		return $this;
 	}
 
 	public function all() {
+		$flag = true;
+		if(isset($this->where))
+			if(count($this->where))
+				foreach($this->where as $key => $value)
+					if($value['column'] == 'deleted_at')
+						$flag = false;
+		if($flag)
+			$this->where('deleted_at', 'IS', 'NULL');
+
 		$db = new db();
 
 		// basic query for the function
@@ -37,13 +66,19 @@ class table {
 
 	public function whereclause() {
 		$values = [];  // empty array for values to be passed in prepared statement
+		if(!isset($this->values)) $this->values = $values;
 		if(isset($this->where)) {
 			if(count($this->where)) {
 				foreach($this->where as $where) {
 					$w[] = $where['column'];
 					$w[] = $where['param'];
-					$w[] = '?';
-					$values[] = $where['value'];
+					if($where['value'] == 'NULL') {
+						$w[] = 'NULL';
+					}
+					else {
+						$w[] = '?';
+						$values[] = $where['value'];
+					}
 
 					$this->WHERE[] = implode(' ', $w);
 					$this->values = $values;
@@ -124,54 +159,48 @@ class table {
 		$query->execute($this->values);
 	}
 
-	// public function update($column, $value, $wherecolumn, $whereparam, $wherevalue) {
-	// 	$db = new db();
 
-	// 	$sql = "UPDATE `{$this->table}` 
-	// 					SET {$column} = :value
-	// 					WHERE {$wherecolumn} {$whereparam} :wherevalue";
-
-	// 	$query = $db->pdo->prepare($sql);
-
-	// 	$query->execute([
-	// 		':value' 			=> $value,
-	// 		':wherevalue' => $wherevalue
-	// 	]);
-
-	// 	if($query->rowCount())
-	// 		$this->success = true;
-	// }
-
-
-	public function delete($column, $param, $value) {
+	public function delete() {
 		$db = new db();
 
-		$sql = "DELETE FROM `{$this->table}` WHERE {$column} {$param} :value";
+		// basic query for the function
+		$this->sql[] = "DELETE FROM `{$this->table}`";
 
-		$query = $db->pdo->prepare($sql);
+		// generating where clause
+		$this->whereclause();
+				
+		$query = $db->pdo->prepare($this->sql);
 
-		$query->execute([':value' => $value]);
-
-		if($query->rowCount())
-			$this->success = true;
+		$query->execute($this->values);
 	}
 
 
-	public function softdelete($column, $param, $value) {
+	public function trash() {
 		$db = new db();
 
-		$sql = "UPDATE `{$this->table}` 
-						SET deleted_at = NOW()
-						WHERE {$column} {$param} :value";
+		// basic query for the function
+		$this->sql[] = "UPDATE `{$this->table}` SET deleted_at = NOW()";
 
-		$query = $db->pdo->prepare($sql);
+		// generating where clause
+		$this->whereclause();
+				
+		$query = $db->pdo->prepare($this->sql);
 
-		$query->execute([
-			':value' => $value
-		]);
+		$query->execute($this->values);
+	}
 
-		if($query->rowCount())
-			$this->success = true;
+	public function restore() {
+		$db = new db();
+
+		// basic query for the function
+		$this->sql[] = "UPDATE `{$this->table}` SET deleted_at = NULL";
+
+		// generating where clause
+		$this->whereclause();
+				
+		$query = $db->pdo->prepare($this->sql);
+
+		$query->execute($this->values);
 	}
 
 }

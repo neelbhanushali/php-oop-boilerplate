@@ -21,7 +21,7 @@
 			array_pop($upload_target);
 
 			$filemeta = pathinfo($filename);
-			$filename = $filemeta['filename'].rand(0,999).'.'.$filemeta['extension'];
+			$filename = $filemeta['filename'].rand(0,9).'.'.$filemeta['extension'];
 
 			$upload_target[] = $filename;
 
