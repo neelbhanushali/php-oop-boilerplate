@@ -13,7 +13,7 @@ $abcd
 // ->get(1,2);
 // ->withTrashed()
 // ->trashed()
-// ->all();
+->all();
 // ->first()
 // ->trash();
 // ->update('q', 1);

@@ -1,7 +1,7 @@
 <?php
 class db {
 	public function __construct() {
-		$d = json_decode(file_get_contents('../details.json'));
+		require_once '../details.php';
 		
 		try {
 	    $this->pdo = new PDO("mysql:host=$d->DB_HOST;dbname=$d->DB_NAME", $d->DB_USER, $d->DB_PASS);
@@ -10,9 +10,10 @@ class db {
 	    // echo "Connected successfully";
     }
 		catch(PDOException $e) {
-		$this->success = false;
-		$this->message = 'db conx error';
-    }
+			// $this->success = false;
+			$this->message = 'db conx error';
+			die(json_encode($this));
+    	}
 	}
 
 	public function __destruct() {
