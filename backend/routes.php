@@ -9,12 +9,12 @@ $route['/about'] = function() {
 	get('website.about');
 };
 
-$route['/user/([A-Za-z0-9]\w+)'] = function($username) {
+$route['/user/([A-Za-z0-9]+)'] = function($username) {
 	$GLOBALS['username'] = $username;
 	get('website.user');
 };
 
-$route['/date/([0-9]\w+)/([0-9]\w+)/([0-9]\w+)'] = function($year, $month, $day) {
+$route['/date/([0-9]+)/([0-9]+)/([0-9]+)'] = function($year, $month, $day) {
 	$GLOBALS['day'] = $day;
 	$GLOBALS['month'] = $month;
 	$GLOBALS['year'] = $year;
