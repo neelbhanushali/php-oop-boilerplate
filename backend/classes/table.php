@@ -1,7 +1,5 @@
 <?php
-
-
-require_once 'db.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/backend/inc.php';
 
 class table {
 	protected $table;
@@ -13,13 +11,6 @@ class table {
 			'param' => $param,
 			'value' => $value,
 		];
-		
-		// // items that are not trashed
-		// $this->where[] = [
-		// 	'column' => 'deleted_at',
-		// 	'param' => 'IS',
-		// 	'value' => 'NULL',
-		// ];
 
 		return $this;
 	}

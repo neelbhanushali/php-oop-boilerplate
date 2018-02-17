@@ -1,0 +1,1 @@
+<h1>user <?php echo $GLOBALS['username']; ?></h1>

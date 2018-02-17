@@ -19,8 +19,8 @@ $abcd
 // ->update('q', 1);
 // ->restore();
 
-echo '<pre>';
-print_r($abcd);
-echo '</pre>';
+// echo '<pre>';
+// print_r($abcd);
+// echo '</pre>';
 
 ?>

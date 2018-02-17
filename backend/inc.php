@@ -58,16 +58,23 @@
 	$p = json_decode(json_encode($_POST));
 	$g = json_decode(json_encode($_GET));
 	$s = json_decode(json_encode($_SESSION));
+	$sr = json_decode(json_encode($_SERVER));
 	$c = json_decode(json_encode($_COOKIE));
 
-	$path[] = $_SERVER['DOCUMENT_ROOT'];
-	$path[] = 'backend';
-	$path[] = 'classes';
-	$path = implode(DIRECTORY_SEPARATOR, $path);
-	$classes = scandir($path);
 
-	for($i = 2; $i < count($classes); $i++) {
-			require_once "backend/classes/{$classes[$i]}";
-	}
+	/** 
+	 * including all classes
+	 */
+	// $path[] = $sr->DOCUMENT_ROOT;
+	// $path[] = 'backend';
+	// $path[] = 'classes';
+	// $path = implode(DIRECTORY_SEPARATOR, $path);
+	// $classes = scandir($path);
 
+	// for($i = 2; $i < count($classes); $i++)
+	// 	require_once $path."/{$classes[$i]}";
+
+	spl_autoload_register(function ($class) {
+		require_once "backend/classes/{$class}.php";
+	});
 ?>

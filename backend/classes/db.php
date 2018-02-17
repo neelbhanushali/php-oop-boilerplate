@@ -1,10 +1,15 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/backend/inc.php';
+
 class db {
 	public function __construct() {
-		require_once '../details.php';
+		$host = "localhost";
+		$user = "root";
+		$pass = "";
+		$db   = "test";
 		
 		try {
-	    $this->pdo = new PDO("mysql:host=$d->DB_HOST;dbname=$d->DB_NAME", $d->DB_USER, $d->DB_PASS);
+	    $this->pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
 	    // set the PDO error mode to exception
 	    $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	    // echo "Connected successfully";
